@@ -2,23 +2,44 @@ package se.iths;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class App {
-    static Connection con = null;
     private static final String JDBC_CONNECTION = "jdbc:mysql://localhost:3306/iths";
     private static final String JDBC_USER = "iths";
     private static final String JDBC_PASSWORD = "iths";
+    static Connection con = null;
     static ArrayList<Games> games = new ArrayList<>();
+    static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) throws SQLException {
+        menu();
+    }
+
+    public static void menu() throws SQLException {
         con = startProgram();
+        System.out.println("""
+                1: Select and Print All Games In DataBase:
+                2: Remove Game from Database: 
+                3: Update Game in DataBase: 
+                """);
+        int choice = in.nextInt();
+        switch (choice) {
+            case 1 -> selectAndPrintDB();
+            case 2 -> removeGameFromDB();
+
+        }
+    }
+
+    private static void removeGameFromDB() {
+        PreparedStatement statement = removeGameFromDB(con, 1);
+        games = addIntoGamesObject(statement);
+        printGames(games);
+    }
+
+    private static void selectAndPrintDB() throws SQLException {
         PreparedStatement stmt = selectAllGames(con);
         games = addIntoGamesObject(stmt);
-        printGames(games);
-
-        PreparedStatement statement= removeGameFromDB(con,1);
-
-        games= addIntoGamesObject(statement);
         printGames(games);
     }
 
@@ -41,8 +62,7 @@ public class App {
                     i++;
                     games.add(new Games(i, set.getString("Games"), set.getString("Country"), set.getString("BanCategory")));
                 }
-            }
-            else {
+            } else {
                 games.clear();
 
                 while (set.next()) {
@@ -60,9 +80,9 @@ public class App {
         games.forEach(System.out::println);
     }
 
-    private static PreparedStatement removeGameFromDB(Connection con, int indexToRemove){
+    private static PreparedStatement removeGameFromDB(Connection con, int indexToRemove) {
         try {
-            PreparedStatement statement= con.prepareStatement("delete from GamesDB where Id = " + indexToRemove);
+            PreparedStatement statement = con.prepareStatement("delete from GamesDB where Id = " + indexToRemove);
             statement.execute();
             PreparedStatement stmt = con.prepareStatement("select * from GamesDB");
             return stmt;
@@ -71,6 +91,4 @@ public class App {
         }
 
     }
-
-
 }
