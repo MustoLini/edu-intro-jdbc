@@ -20,4 +20,8 @@ cat Games.csv
 *CTRL+D*
 
 docker exec -i iths-mysql mysql -uroot -proot < normalize.sql
+
+
  ```
+
+## This app can just be run from Idea because it has Scanner inside and scanner cant work with Gradle. 
