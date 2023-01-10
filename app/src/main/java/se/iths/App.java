@@ -20,19 +20,64 @@ public class App {
         con = startProgram();
         System.out.println("""
                 1: Select and Print All Games In DataBase:
-                2: Remove Game from Database: 
-                3: Update Game in DataBase: 
+                2: Remove Game from Database:
+                3: Update Game in DataBase:
                 """);
+
         int choice = in.nextInt();
+        in.nextLine();
         switch (choice) {
             case 1 -> selectAndPrintDB();
             case 2 -> removeGameFromDB();
-
+            case 3 -> updateGameFromDB();
         }
     }
 
-    private static void removeGameFromDB() {
-        PreparedStatement statement = removeGameFromDB(con, 1);
+    private static void updateGameFromDB() throws SQLException {
+        selectAndPrintDB();
+        System.out.println();
+        System.out.println("What index do you want to change?");
+        int num = in.nextInt();
+        in.nextLine();
+        System.out.println("What Column do you want to change?");
+        String columnChange= in.nextLine();
+        System.out.println("What do you want to change it to?");
+        String nameChange= in.nextLine();
+        PreparedStatement statement = updateStatementTowardsUpdatingDb(columnChange,nameChange,num);
+        statement.execute();
+        statement= con.prepareStatement("select * from GamesDB");
+        statement.execute();
+        selectAndPrintDB();
+    }
+
+    private static PreparedStatement updateStatementTowardsUpdatingDb(String stringChange, String valueChange, int num) throws SQLException {
+
+            switch (stringChange){
+                case "Games" -> {
+                    PreparedStatement games =con.prepareStatement("update from GamesDB set Games = " + valueChange + " where Id = " + num);
+                    return games;
+                }
+                case "Country" -> {
+                   PreparedStatement country = con.prepareStatement("update from GamesDB set Country = " + valueChange + " where Id = " + num);
+                    return country;
+                }
+                case "BanCategory" -> {
+                    PreparedStatement banCategory = con.prepareStatement("update from GamesDB set BanCategory = " + valueChange + " where Id = " + num);
+                    return banCategory;
+                }
+                default -> {
+                    PreparedStatement defstatement= con.prepareStatement("select * from GamesDB");
+                    return defstatement;
+                }
+            }
+
+    }
+
+    private static void removeGameFromDB() throws SQLException {
+        selectAndPrintDB();
+        System.out.println("What index do you want to remove?");
+        int value= in.nextInt();
+        PreparedStatement statement = removeGameFromDBs(con, value);
         games = addIntoGamesObject(statement);
         printGames(games);
     }
@@ -80,7 +125,7 @@ public class App {
         games.forEach(System.out::println);
     }
 
-    private static PreparedStatement removeGameFromDB(Connection con, int indexToRemove) {
+    private static PreparedStatement removeGameFromDBs(Connection con, int indexToRemove) {
         try {
             PreparedStatement statement = con.prepareStatement("delete from GamesDB where Id = " + indexToRemove);
             statement.execute();
