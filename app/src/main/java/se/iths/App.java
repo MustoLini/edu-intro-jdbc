@@ -54,15 +54,21 @@ public class App {
 
             switch (stringChange){
                 case "Games" -> {
-                    PreparedStatement games =con.prepareStatement("update from GamesDB set Games = " + valueChange + " where Id = " + num);
+                    PreparedStatement games =con.prepareStatement("update from GamesDB set Games = ?" + " where Id = ?" );
+                    games.setString(1,valueChange);
+                    games.setLong(2,num);
                     return games;
                 }
                 case "Country" -> {
-                   PreparedStatement country = con.prepareStatement("update from GamesDB set Country = " + valueChange + " where Id = " + num);
+                   PreparedStatement country = con.prepareStatement("update from GamesDB set Country = ?"  + " where Id = ?");
+                    country.setString(1,valueChange);
+                    country.setLong(2,num);
                     return country;
                 }
                 case "BanCategory" -> {
-                    PreparedStatement banCategory = con.prepareStatement("update from GamesDB set BanCategory = " + valueChange + " where Id = " + num);
+                    PreparedStatement banCategory = con.prepareStatement("update from GamesDB set BanCategory = ?" + " where Id = ?" );
+                    banCategory.setString(1,valueChange);
+                    banCategory.setLong(2,num);
                     return banCategory;
                 }
                 default -> {
