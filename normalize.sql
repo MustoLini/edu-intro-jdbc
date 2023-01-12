@@ -30,11 +30,11 @@ IGNORE 1 ROWS;
 DROP TABLE IF EXISTS GamesDB;
 
 CREATE TABLE GamesDB (
-Id INT NOT NULL, 
-Games VARCHAR(400), 
-Country VARCHAR(400), 
-BanCategory VARCHAR(400), 
-PRIMARY KEY(Id)
+                         Id INT NOT NULL AUTO_INCREMENT,
+                         Games VARCHAR(400),
+                         Country VARCHAR(400),
+                         BanCategory VARCHAR(400),
+                         PRIMARY KEY(Id)
 ) ENGINE=INNODB;
 
-INSERT INTO GamesDB(Games,Country,BanCategory) SELECT Game, Country, BanCategory FROM GAMES;
+INSERT INTO GamesDB(Games,Country,BanCategory) SELECT Games, Country, `Ban Category` FROM Games;
